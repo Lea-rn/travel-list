@@ -2,17 +2,20 @@ import { useState } from "react";
 import "./App.css";
 
 
-const initialItems = [
-  { id: 1, description: "Passport", quantity: 2, packed: false },
-  { id: 2, description: "socks", quantity: 12, packed: false },
-];
 
 export default function App() {
+  const [items, setItems] = useState([]);
+
+
+
+  function handleAddItems(newItem) {
+    setItems((currentItems) => [...currentItems, newItem]);
+  }
   return (
     <div>
       <Logo />
-      <Form />
-      <PackingList />
+      <Form handleAddItems={handleAddItems} />
+      <PackingList items ={items} />
       <Stats />
     </div>
   );
@@ -26,37 +29,57 @@ function Logo() {
   );
 }
 
-function Form() {
-  
-  const [description , setDescription] = useState("") ;
-  const [quantity , setQuantity] = useState(1)
-// console.log(description)
-  function handleSubmit (e){
-    // console.log(e.target)
-    e.preventDefault() ;
-  }
+function Form({handleAddItems}) {
+  // console.log(description)
+  /////// onChange , value ==> controlled element ....
+  const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState(1);
 
-  
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!description) return; //// technique early return
+    const newItem = {
+      id: Date.now(),
+      description,
+      quantity,
+      packed: false,
+    };
+    handleAddItems(newItem);
+    setDescription("");
+    setQuantity(1);
+  }
 
   return (
     <form className="form-container" onSubmit={handleSubmit}>
       <p>what do you need for your 😍 trip ?</p>
-      <select value={quantity} onChange={(e)=>setQuantity(Number(e.target.value))}>
-        {Array.from({ length: 20 }, (_, i) => i + 1 ).map((num) => (
-          <option key={num} value={num}>{num}</option>
+
+      <select
+        value={quantity}
+        onChange={(e) => setQuantity(Number(e.target.value))}
+      >
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+          <option key={num} value={num}>
+            {num}
+          </option>
         ))}
       </select>
-      <input value={description}  type="text" placeholder="item..." 
-       onChange={(e)=>setDescription(e.target.value)}  />
+      <input
+        value={description}
+        type="text"
+        placeholder="item..."
+        onChange={(e) => setDescription(e.target.value)}
+      />
       <button>ADD</button>
     </form>
   );
 }
 
-function PackingList() {
+function PackingList({items}) {
   return (
     <div className="Packing-container">
-      {initialItems.map((item) => (
+      {items.map((item) => (
         <Item key={item.id} item={item} />
       ))}
     </div>
