@@ -50,11 +50,16 @@
   color: #5a3e2b;
   font-weight: 700;
   font-size: 18px;
+ 
 }
 
 .item{
-  margin-left: 100px;
+  margin-left: 5px;
 
+}
+
+.item-container{
+  margin: 0px 50px;
 }
 
 select {
